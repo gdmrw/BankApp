@@ -4,7 +4,6 @@ package org.swe266.bankappbackend.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.swe266.bankappbackend.entity.User;
 import org.swe266.bankappbackend.repository.UserRepository;
@@ -125,14 +124,15 @@ public class UserService {
         return ResponseEntity.ok(user);
     }
 
+    // CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-Site Scripting')
     public ResponseEntity<?> checkBalance(HttpSession session) {
         String username = (String) session.getAttribute("currentUser");
         Optional<User> userResult = userRepository.findByUsername(username);
-        if(userResult.isEmpty()) {
+        if (userResult.isEmpty()) {
             String errorMessage = "User Not Login";
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
         }
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok("<h1>Your balance is: " + user.getBalance() + "</h1>"); // Reflecting user data in response without sanitization
     }
 }
