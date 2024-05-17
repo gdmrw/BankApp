@@ -3,6 +3,7 @@ package org.swe266.bankappbackend.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.swe266.bankappbackend.entity.User;
@@ -16,15 +17,15 @@ import static org.swe266.bankappbackend.utils.ValidationUtils.*;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final JdbcTemplate jdbcTemplate;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JdbcTemplate jdbcTemplate) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public ResponseEntity<?> registerUser(String username, String password, String balance, HttpSession session) {
-
+        // validation
         if (!isValidPasswordOrUsername(username) || !isValidPasswordOrUsername(password)) { // bad code - not validate the username
             String errorMessage = "Invalid input. Please provide valid username and password.";
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
@@ -41,15 +42,20 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
         }
 
-        String encodedPassword = passwordEncoder.encode(password);
+
         User user = new User();
         user.setUsername(username);
         user.setBalance(Double.parseDouble(balance));
-        user.setPassword(encodedPassword);
+
+        // CWE-256: Plaintext Storage of a Password
+        user.setPassword(password);
         session.setAttribute("currentUser", username);
-        User savedUser = userRepository.save(user);
-        savedUser.setPassword(null);
-        return ResponseEntity.ok(savedUser);
+
+        // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
+        String sql = "INSERT INTO user (username, password, balance) VALUES ('" + user.getUsername() + "', '" + user.getPassword() + "', " + user.getBalance() + ")";
+        jdbcTemplate.execute(sql);
+        user.setPassword(null);
+        return ResponseEntity.ok(user);
     }
 
     public ResponseEntity<?> logInUser(String username, String password, HttpSession session) {
@@ -65,8 +71,7 @@ public class UserService {
         }
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-        boolean passwordMatches = passwordEncoder.matches(password, user.getPassword());
-        if (!passwordMatches) {
+        if (!user.getPassword().equals(password)) {
             String errorMessage = "Wrong Password";
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
         }
