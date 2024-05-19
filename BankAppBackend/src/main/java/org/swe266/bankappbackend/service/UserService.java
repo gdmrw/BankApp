@@ -9,8 +9,6 @@ import org.swe266.bankappbackend.entity.User;
 import org.swe266.bankappbackend.repository.UserRepository;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import static org.swe266.bankappbackend.utils.ValidationUtils.*;
 

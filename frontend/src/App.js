@@ -3,7 +3,7 @@ import { Layout, Typography, Button, message } from "antd";
 import LoginForm from "./components/LoginForm";
 import SignupForm from "./components/SignupForm";
 import BankForm from "./components/BankForm";
-import { logout } from "./utils"; // Import the logout function
+import { logout } from "./utils";
 import "./App.css";
 
 const { Header, Content } = Layout;
