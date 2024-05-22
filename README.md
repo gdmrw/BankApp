@@ -2,7 +2,7 @@
 
 A simple bank web application based on SpringBoot and React with deliberately insecure vulnerabilities.
 
-Authors: Nelson Wang, Kaichun chen, Changhao Li
+Authors: Nelson Wang, Kaichun Chen, Changhao Li
 
 ## Build Instructions
 ### Prerequisites:
