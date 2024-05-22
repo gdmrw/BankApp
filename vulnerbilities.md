@@ -37,7 +37,7 @@ An attacker can hijack an active session and perform actions without re-authenti
 Passwords are stored in plain text in the database when using the `registerUser` method. This exposes users to potential data breaches.
 
 **Exploitation Steps**:
-Review the database entries and observe that passwords are stored as plain text.
+SQL injection will not achievable in login and register part due to introduce of validation class and spring jdbc feature
 
 
 **Secure Coding and Design Principles Followed**:
