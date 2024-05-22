@@ -15,25 +15,21 @@ BankApp is an online banking system that allows customers to register and open a
 ### User Login
 
 - Users can log in using their registered username and password.
-- Only correct username and password combinations will successfully log in.
 
 ### Deposit
 
 - Logged-in users can make deposits.
 - Deposit amounts must be valid positive numbers, formatted to two decimal places.
-- After a successful deposit, users can see their updated account balance.
 
 ### Withdrawal
 
 - Logged-in users can make withdrawals.
 - Withdrawal amounts must be valid positive numbers, formatted to two decimal places.
 - Users cannot withdraw more than their current account balance; if attempted, the withdrawal will fail.
-- After a successful withdrawal, users can see their updated account balance.
 
 ### Balance Inquiry
 
 - Logged-in users can check their current account balance.
-
 
 
 ## Error Handling
