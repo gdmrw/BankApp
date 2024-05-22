@@ -25,11 +25,11 @@ An attacker can hijack an active session and perform actions without re-authenti
     --header 'Cookie: JSESSIONID=6EA1974293EE4784AC2450418D89C7D6' \
     --form 'amount="100"'
     ```
-   > `localhost` can be the specific target IP if you use an external machine.
+    > `localhost` can be the specific target IP if you use an external machine.
 
-**Mitigation**:
-- Use HTTPS to encrypt all communication.
-- Implement session filters to validate session integrity.
+
+**Secure Coding and Design Principles Followed**:
+- **Session Management**: Securely manage user sessions to prevent hijacking by enforcing HTTPS and implementing session filters.
 
 ### 2. CWE-256: Plaintext Storage of a Password
 
@@ -39,9 +39,9 @@ Passwords are stored in plain text in the database when using the `registerUser`
 **Exploitation Steps**:
 Review the database entries and observe that passwords are stored as plain text.
 
-**Mitigation**:
-- Encode passwords using SHA-256 before storing them in the database.
-- Utilize libraries such as BCrypt for stronger password hashing.
+
+**Secure Coding and Design Principles Followed**:
+- **Data Encryption**: Encrypt sensitive data to protect it from unauthorized access by planning to implement SHA-256 hashing for password storage.
 
 ### 3. CWE-79: Improper Neutralization of Input During Web Page Generation (Cross-site Scripting - XSS)
 
@@ -57,10 +57,9 @@ The application is vulnerable to XSS attacks, allowing attackers to inject malic
     ```
 4. Click the withdraw button to trigger the alert box.
 
-**Mitigation**:
-- Sanitize all user inputs.
-- Use libraries like DOMPurify to clean HTML inputs.
-- Implement Content Security Policy (CSP) headers.
+**Secure Coding and Design Principles Followed**:
+- **Input Validation**: Validate all inputs to ensure they conform to expected formats by sanitizing user inputs.
+- **Access Control**: Restrict access to sensitive resources based on user roles and permissions by implementing CSP headers.
 
 ### 4. Sensitive Data Exposure Without Authentication
 
@@ -69,13 +68,11 @@ Sensitive application data can be accessed without authentication through the Ac
 
 **Exploitation Steps**:
 Access the following URL without authentication:
-```bash
-http://localhost:8080/actuator/env
-```
-
-**Mitigation**:
-- Restrict access to sensitive Actuator endpoints.
-- Require authentication for accessing Actuator endpoints.
+    ```bash
+    http://localhost:8080/actuator/env
+    ```
+**Secure Coding and Design Principles Followed**:
+- **Access Control**: Restrict access to sensitive resources based on user roles and permissions by requiring authentication for Actuator endpoints.
 
 ### 5. Remote Shutdown
 
@@ -84,36 +81,10 @@ The application allows remote shutdown via the Actuator endpoint without proper 
 
 **Exploitation Steps**:
 Send a POST request to the shutdown endpoint:
-```bash
-curl --location --request POST 'http://localhost:8080/actuator/shutdown'
-```
+    ```bash
+    curl --location --request POST 'http://localhost:8080/actuator/shutdown'
+    ```
+**Secure Coding and Design Principles Followed**:
+- **Access Control**: Restrict access to sensitive resources based on user roles and permissions by disabling the shutdown endpoint in production environments and requiring authentication for sensitive Actuator endpoints.
 
-**Mitigation**:
-- Disable the shutdown endpoint in production environments.
-- Require authentication for sensitive Actuator endpoints.
 
-## Secure Coding and Design Principles Followed
-
-### Input Validation
-
-- **Principle**: Validate all inputs to ensure they conform to expected formats.
-- **Implementation**: Used regular expressions to validate inputs such as usernames, passwords, and monetary amounts.
-
-### Data Encryption
-
-- **Principle**: Encrypt sensitive data to protect it from unauthorized access.
-- **Implementation**: Plan to implement SHA-256 hashing for password storage.
-
-### Session Management
-
-- **Principle**: Securely manage user sessions to prevent hijacking.
-- **Implementation**: Plan to enforce HTTPS and implement session filters.
-
-### Access Control
-
-- **Principle**: Restrict access to sensitive resources based on user roles and permissions.
-- **Implementation**: Plan to secure Actuator endpoints and require authentication for sensitive operations.
-
-## Conclusion
-
-This document provides an overview of the vulnerabilities identified in the BankApp project during the build phase. It includes detailed steps for exploiting these vulnerabilities and recommendations for mitigating them. Following secure coding practices and implementing the suggested mitigations will enhance the security of the application.
