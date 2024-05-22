@@ -1,62 +1,46 @@
 # BankApp
 
-## Project Overview
+A simple bank web application based on SpringBoot and React with deliberately insecure vulnerabilities.
 
-BankApp is an online banking system that allows customers to register and open accounts, log in to check their balance, and make deposits and withdrawals. The project consists of a React-based frontend and a Spring Boot-based backend.
+Authors: Nelson Wang, Kaichun Chen, Changhao Li
 
-## Features
+## Build Instructions
+### Prerequisites:
+1. Java 17 or higher
+2. node version v20.10.0 or higher
 
-### User Registration
+### Installations:
+- [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
+- [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=mac)
+- [Node.js and npm](https://nodejs.org/en/download)
 
-- Users can register and open an account with a valid username, password, and initial balance.
-- Usernames and passwords must conform to specified character sets and length requirements.
-- Initial balance must be a valid positive number, formatted to two decimal places.
+### Build Database
+1. Set up MySQL Workbench:
+   - Open MySQL Workbench and connect to local instance 3306
 
-### User Login
+2. Create schema:
+   - Use the SQL script provided in [`databaseSetup.sql`](https://github.com/june-rains/BankApp/blob/main/BankAppBackend/databaseSetup.sql) to create `bank` database and `user` table
 
-- Users can log in using their registered username and password.
+### Build Project
+   - Download and Open code of project in IntelliJ IDEA
 
-### Deposit
+#### Backend - Spring Framework：
+1. Set up database account:
+   -  Open `src > main > resources`
+    - Open the `application.properties` file, input your own MySQL username and password
 
-- Logged-in users can make deposits.
-- Deposit amounts must be valid positive numbers, formatted to two decimal places.
+2. Start the backend:
+    - Run BankApplication:  src > main > java > org.swe266.bankappbackend
 
-### Withdrawal
+#### Frontend - React Framework:
+1. Change directory to frontend using the following command:
+    - cd frontend
 
-- Logged-in users can make withdrawals.
-- Withdrawal amounts must be valid positive numbers, formatted to two decimal places.
-- Users cannot withdraw more than their current account balance; if attempted, the withdrawal will fail.
+2. Install app required packages:
+    - npm install
 
-### Balance Inquiry
+3. Start the application:
+    - npm start
 
-- Logged-in users can check their current account balance.
-
-
-## Error Handling
-
-- All invalid inputs will return the string "invalid_input" and display it on the screen.
-
-## Project Structure & How to run
-
-### Frontend (React)
-
-- A user interface created using React that provides registration, login, deposit, withdrawal, and balance inquiry features.
-- Ensures communication with the backend API.
-```bash
-cd frontend
-npm install
-npm start
-```
-
-### Backend (Spring Boot)
-
-- A backend service implemented using Spring Boot that handles user requests, input validation, deposit and withdrawal operations, and maintains user data and account balances.
-```bash
-cd BankAppBackend
-./mvnw spring-boot:run
-```
-or run BankAppBackendApplication
-
-### Database (MySQL)
-- Uses MySQL for storing user information and account data.
-- Update the database configuration(username and password) in `application.properties`.
+4. A new page will be rendered:
+    - http://localhost:3000/
