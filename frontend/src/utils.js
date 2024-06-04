@@ -1,4 +1,4 @@
-const domain = "http://localhost:8080";
+const domain = "https://localhost:8443";
 
 export const login = (credentials) => {
   const loginUrl = `${domain}/login`;
@@ -54,15 +54,15 @@ export const withdraw = (amount) => {
     }),
     credentials: "include", // This is crucial for maintaining the session
   })
-    .then((response) => {
-      if (response.status < 200 || response.status >= 300) {
-        throw Error("Fail to withdraw");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      return data.newBalance;
-    });
+      .then((response) => {
+        if (response.status < 200 || response.status >= 300) {
+          throw Error("Fail to withdraw");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        return data.newBalance;
+      });
 };
 
 export const deposit = (amount) => {
@@ -78,15 +78,15 @@ export const deposit = (amount) => {
     }),
     credentials: "include", // This is crucial for maintaining the session
   })
-    .then((response) => {
-      if (response.status < 200 || response.status >= 300) {
-        throw Error("Fail to deposit");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      return data.newBalance;
-    });
+      .then((response) => {
+        if (response.status < 200 || response.status >= 300) {
+          throw Error("Fail to deposit");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        return data.newBalance;
+      });
 };
 
 export const checkBalance = () => {
@@ -99,15 +99,15 @@ export const checkBalance = () => {
     },
     credentials: "include", // This is crucial for maintaining the session
   })
-    .then((response) => {
-      if (response.status < 200 || response.status >= 300) {
-        throw Error("Fail to check balance");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      return data;
-    });
+      .then((response) => {
+        if (response.status < 200 || response.status >= 300) {
+          throw Error("Fail to check balance");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        return data;
+      });
 };
 
 export const logout = () => {
