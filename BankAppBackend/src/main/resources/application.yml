@@ -1,0 +1,29 @@
+management:
+    endpoint:
+        shutdown:
+            enabled: false
+    endpoints:
+        web:
+            exposure:
+                include: health,info
+
+
+spring:
+    application:
+        name: BankAppBackend
+    datasource:
+        password: 593457366
+        url: jdbc:mysql://localhost:3306/bank
+        username: root
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+
+server:
+    port: 3000
+    ssl:
+        key-store: BankAppBackend/keystore.p12
+        key-store-password: yourpassword
+        key-store-type: PKCS12
+        key-alias: myalias

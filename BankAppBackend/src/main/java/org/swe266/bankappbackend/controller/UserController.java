@@ -7,6 +7,7 @@ import org.swe266.bankappbackend.service.UserService;
 
 import javax.servlet.http.HttpSession;
 
+@CrossOrigin
 @RestController
 public class UserController {
 
