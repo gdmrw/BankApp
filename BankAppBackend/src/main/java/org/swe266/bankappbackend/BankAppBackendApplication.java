@@ -21,6 +21,8 @@ public class BankAppBackendApplication {
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("https://localhost:3000")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowCredentials(true);
             }
         };
