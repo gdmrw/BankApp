@@ -4,11 +4,16 @@ package org.swe266.bankappbackend.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.swe266.bankappbackend.entity.User;
 import org.swe266.bankappbackend.repository.UserRepository;
 
+
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import static org.swe266.bankappbackend.utils.ValidationUtils.*;
 
@@ -16,11 +21,11 @@ import static org.swe266.bankappbackend.utils.ValidationUtils.*;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, JdbcTemplate jdbcTemplate) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.jdbcTemplate = jdbcTemplate;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public ResponseEntity<?> registerUser(String username, String password, String balance, HttpSession session) {
@@ -46,13 +51,13 @@ public class UserService {
         user.setUsername(username);
         user.setBalance(Double.parseDouble(balance));
 
-        // CWE-256: Plaintext Storage of a Password
-        user.setPassword(password);
+        // Hash the password before storing it
+        String hashedPassword = passwordEncoder.encode(password);
+        user.setPassword(hashedPassword);
         session.setAttribute("currentUser", username);
 
-        // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
-        String sql = "INSERT INTO user (username, password, balance) VALUES ('" + user.getUsername() + "', '" + user.getPassword() + "', " + user.getBalance() + ")";
-        jdbcTemplate.execute(sql);
+        // Save user using UserRepository to prevent SQL injection
+        userRepository.save(user);
         user.setPassword(null);
         return ResponseEntity.ok(user);
     }
@@ -70,7 +75,8 @@ public class UserService {
         }
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-        if (!user.getPassword().equals(password)) {
+        // Check the hashed password
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             String errorMessage = "Wrong Password";
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
         }
@@ -124,7 +130,6 @@ public class UserService {
         return ResponseEntity.ok(user);
     }
 
-    // CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-Site Scripting')
     public ResponseEntity<?> checkBalance(HttpSession session) {
         String username = (String) session.getAttribute("currentUser");
         Optional<User> userResult = userRepository.findByUsername(username);
@@ -133,6 +138,8 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
         }
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-        return ResponseEntity.ok("<h1>Your balance is: " + user.getBalance() + "</h1>"); // Reflecting user data in response without sanitization
+        Map<String, Object> response = new HashMap<>();
+        response.put("balance", user.getBalance());
+        return ResponseEntity.ok(response);
     }
 }

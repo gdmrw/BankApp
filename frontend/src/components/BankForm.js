@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { Button, Form, Input, message, Modal } from "antd";
-import { withdraw, deposit, checkBalanceXSS } from "../utils"; // Import the utility functions
+import { withdraw, deposit, checkBalance } from "../utils"; // Import the utility functions
 
 const BankSystem = () => {
   const [withdrawForm] = Form.useForm();
   const [depositForm] = Form.useForm();
-  const [balanceXSS, setBalanceXSS] = useState("");
+  const [balance, setBalance] = useState("");
 
   const onWithdrawFinish = (values) => {
     withdraw(values.amount)
       .then((newBalance) => {
         message.success(`Successfully withdrew $${values.amount}`);
         withdrawForm.resetFields(); // Clear the withdraw form fields
+        setBalance(newBalance);
       })
       .catch((err) => {
         message.error(err.message);
@@ -23,19 +24,20 @@ const BankSystem = () => {
       .then((newBalance) => {
         message.success(`Successfully deposited $${values.amount}`);
         depositForm.resetFields(); // Clear the deposit form fields
+        setBalance(newBalance);
       })
       .catch((err) => {
         message.error(err.message);
       });
   };
 
-  const handleCheckBalanceXSS = () => {
-    checkBalanceXSS()
+  const handleCheckBalance = () => {
+    checkBalance()
       .then((data) => {
-        setBalanceXSS(data);
+        setBalance(data.balance);
         Modal.info({
           title: "Your Balance",
-          content: <div dangerouslySetInnerHTML={{ __html: data }} />,
+          content: <div>Your balance is: ${data.balance}</div>,
           onOk() {},
         });
       })
@@ -83,7 +85,7 @@ const BankSystem = () => {
       </Form>
 
       <Button
-        onClick={handleCheckBalanceXSS}
+        onClick={handleCheckBalance}
         type="primary"
         style={{ marginTop: "20px" }}
       >

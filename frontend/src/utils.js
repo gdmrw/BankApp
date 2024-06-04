@@ -89,7 +89,7 @@ export const deposit = (amount) => {
     });
 };
 
-export const checkBalanceXSS = () => {
+export const checkBalance = () => {
   const checkBalanceUrl = `${domain}/balance`;
 
   return fetch(checkBalanceUrl, {
@@ -103,7 +103,7 @@ export const checkBalanceXSS = () => {
       if (response.status < 200 || response.status >= 300) {
         throw Error("Fail to check balance");
       }
-      return response.text();
+      return response.json();
     })
     .then((data) => {
       return data;
