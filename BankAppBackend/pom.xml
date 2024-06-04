@@ -59,6 +59,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <name>434106808579.dkr.ecr.us-east-2.amazonaws.com/bankapp</name>
+                    </image>
+                </configuration>
             </plugin>
         </plugins>
     </build>
