@@ -4,7 +4,6 @@ A simple bank web application based on SpringBoot and React with deliberately in
 
 Authors: Nelson Wang, Kaichun Chen, Changhao Li
 
-test
 ## Build Instructions
 ### Prerequisites:
 1. Java 17 or higher
