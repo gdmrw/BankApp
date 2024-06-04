@@ -21,12 +21,10 @@ import static org.swe266.bankappbackend.utils.ValidationUtils.*;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, JdbcTemplate jdbcTemplate) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -58,9 +56,8 @@ public class UserService {
         user.setPassword(hashedPassword);
         session.setAttribute("currentUser", username);
 
-        // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
-        String sql = "INSERT INTO user (username, password, balance) VALUES ('" + user.getUsername() + "', '" + user.getPassword() + "', " + user.getBalance() + ")";
-        jdbcTemplate.execute(sql);
+        // Save user using UserRepository to prevent SQL injection
+        userRepository.save(user);
         user.setPassword(null);
         return ResponseEntity.ok(user);
     }
