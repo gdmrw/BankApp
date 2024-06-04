@@ -9,6 +9,8 @@ import org.swe266.bankappbackend.entity.User;
 import org.swe266.bankappbackend.repository.UserRepository;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import static org.swe266.bankappbackend.utils.ValidationUtils.*;
 
@@ -124,7 +126,6 @@ public class UserService {
         return ResponseEntity.ok(user);
     }
 
-    // CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-Site Scripting')
     public ResponseEntity<?> checkBalance(HttpSession session) {
         String username = (String) session.getAttribute("currentUser");
         Optional<User> userResult = userRepository.findByUsername(username);
@@ -133,6 +134,8 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
         }
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-        return ResponseEntity.ok("<h1>Your balance is: " + user.getBalance() + "</h1>"); // Reflecting user data in response without sanitization
+        Map<String, Object> response = new HashMap<>();
+        response.put("balance", user.getBalance());
+        return ResponseEntity.ok(response);
     }
 }
